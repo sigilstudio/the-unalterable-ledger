@@ -2,33 +2,31 @@
 import React, { useState, useEffect } from 'react';
 import { Clock } from './components/Clock';
 import { DirectiveCard } from './components/DirectiveCard';
+import { DirectiveGenerator } from './components/DirectiveGenerator'; // Import new component
 import { Directive, Database, DirectiveStatus } from './types';
 
 const App: React.FC = () => {
   const [directives, setDirectives] = useState<Directive[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [showGenerator, setShowGenerator] = useState<boolean>(false); // State for generator visibility
 
   useEffect(() => {
     const fetchDirectives = async () => {
       setIsLoading(true);
       setError(null);
       try {
-        // In a real build, database.json would be in the public folder
-        // For local dev, ensure public/database.json exists and is served.
         const response = await fetch('/database.json');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}. Ensure database.json is in the public folder and accessible.`);
         }
         const data = await response.json() as Database;
-        // Sort directives: pending first, then by due date (earliest first for pending, latest first for archives)
         const sortedDirectives = data.directives.sort((a, b) => {
           if (a.status === DirectiveStatus.PENDING && b.status !== DirectiveStatus.PENDING) return -1;
           if (a.status !== DirectiveStatus.PENDING && b.status === DirectiveStatus.PENDING) return 1;
           if (a.status === DirectiveStatus.PENDING) {
             return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
           }
-          // For archived, sort by due date descending (most recent first)
           return new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
         });
         setDirectives(sortedDirectives);
@@ -52,10 +50,27 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-ledger-bg text-ledger-text font-mono p-4 md:p-8 selection:bg-ledger-accent selection:text-ledger-bg">
-      <header className="mb-8 pb-4 border-b-2 border-ledger-border flex flex-col sm:flex-row justify-between items-center">
-        <h1 className="text-3xl md:text-4xl font-bold text-ledger-accent mb-4 sm:mb-0">The Unalterable Ledger</h1>
-        <Clock />
+      <header className="mb-8 pb-4 border-b-2 border-ledger-border">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-ledger-accent mb-4 sm:mb-0">The Unalterable Ledger</h1>
+          <Clock />
+        </div>
+        <button
+          onClick={() => setShowGenerator(!showGenerator)}
+          className="w-full sm:w-auto mt-2 sm:mt-0 px-4 py-2 border border-ledger-border text-ledger-accent hover:bg-ledger-border hover:text-white transition-colors text-sm"
+          aria-expanded={showGenerator}
+          aria-controls="directive-generator"
+        >
+          {showGenerator ? 'Hide' : 'Show'} Directive JSON Generator
+        </button>
       </header>
+
+      {showGenerator && (
+        <section id="directive-generator" className="mb-12 p-4 md:p-6 border-2 border-ledger-border bg-black shadow-md">
+          <h2 className="text-2xl font-semibold mb-6 text-ledger-accent border-b border-ledger-border pb-2">Directive JSON Generator</h2>
+          <DirectiveGenerator />
+        </section>
+      )}
 
       <main>
         {isLoading && <p className="text-center text-xl text-ledger-text-dim">Loading Directives...</p>}

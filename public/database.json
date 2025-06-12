@@ -2,34 +2,34 @@
 {
   "directives": [
     {
-      "id": "task-001",
-      "title": "Morning Meditation Protocol",
-      "type": "Discipline",
-      "assignedDate": "2024-07-28T08:00:00Z",
-      "dueDate": "2024-07-28T09:00:00Z",
+       "id": "001",
+      "title": "Evening Walk",
+      "type": "Action",
+      "assignedDate": "2026-06-12",
+      "dueDate": "Daily",
       "status": "Pending",
-      "userReport": null,
-      "mistressAppraisal": null
+      "userReport": "",
+      "mistressAppraisal": ""
     },
     {
-      "id": "task-002",
-      "title": "Prepare Evening Meal",
-      "type": "Service",
+      "id": "002",
+      "title": "Wash the Dishes",
+      "type": "Action",
       "assignedDate": "2024-07-28T10:00:00Z",
-      "dueDate": "2024-07-28T18:00:00Z",
+      "dueDate": "Daily",
       "status": "Pending",
       "userReport": null,
       "mistressAppraisal": null
     },
     {
-      "id": "task-003",
-      "title": "Weekly Report Submission",
+      "id": "003",
+      "title": "Vape Log",
       "type": "Reporting",
-      "assignedDate": "2024-07-22T09:00:00Z",
-      "dueDate": "2024-07-27T23:59:00Z",
-      "status": "Completed",
-      "userReport": "Weekly report submitted as per protocol. All tasks for the week were addressed. Detailed notes included in the standard submission document.",
-      "mistressAppraisal": "Satisfactory. Report was thorough and on time. Compliance noted."
+      "assignedDate": "12-06-2024",
+      "dueDate": "Daily",
+      "status": "Pending",
+      "userReport": "",
+      "mistressAppraisal": ""
     },
     {
       "id": "task-004",

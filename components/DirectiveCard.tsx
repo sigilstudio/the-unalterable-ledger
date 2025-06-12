@@ -44,18 +44,29 @@ export const DirectiveCard: React.FC<DirectiveCardProps> = ({ directive }) => {
 
   const formatDate = (dateString: string) => {
     try {
-      return new Date(dateString).toLocaleString(undefined, { 
-        year: 'numeric', month: 'short', day: 'numeric', 
-        hour: '2-digit', minute: '2-digit' 
-      });
+      const date = new Date(dateString);
+      // Check if the date is invalid. If so, it might be a custom string like "Daily".
+      if (isNaN(date.getTime())) {
+          // If it's not a parsable date, return the original string.
+          // This handles cases like "Daily", "As Required", etc.
+          return dateString;
+      }
+      // If it's a valid date, format it as dd-mm-yyyy
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // JavaScript months are 0-indexed
+      const year = date.getFullYear();
+      return `${day}-${month}-${year}`;
     } catch (e) {
-      return "Invalid Date";
+      // This catch block might be redundant if isNaN check is robust,
+      // but kept for safety for any other unexpected errors during Date operations.
+      console.error("Error processing date:", e, "Input:", dateString);
+      return dateString; // Fallback to original string on any other error
     }
   };
 
   return (
-    <article className={cardClasses}>
-      <h3 className={`text-xl font-bold mb-3 ${directive.status === DirectiveStatus.FAILED ? 'text-red-300' : 'text-ledger-accent'}`}>
+    <article className={cardClasses} aria-labelledby={`directive-title-${directive.id}`}>
+      <h3 id={`directive-title-${directive.id}`} className={`text-xl font-bold mb-3 ${directive.status === DirectiveStatus.FAILED ? 'text-red-300' : 'text-ledger-accent'}`}>
         {directive.title}
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 text-sm">
