@@ -1,0 +1,55 @@
+
+{
+  "directives": [
+    {
+      "id": "task-001",
+      "title": "Morning Meditation Protocol",
+      "type": "Discipline",
+      "assignedDate": "2024-07-28T08:00:00Z",
+      "dueDate": "2024-07-28T09:00:00Z",
+      "status": "Pending",
+      "userReport": null,
+      "mistressAppraisal": null
+    },
+    {
+      "id": "task-002",
+      "title": "Prepare Evening Meal",
+      "type": "Service",
+      "assignedDate": "2024-07-28T10:00:00Z",
+      "dueDate": "2024-07-28T18:00:00Z",
+      "status": "Pending",
+      "userReport": null,
+      "mistressAppraisal": null
+    },
+    {
+      "id": "task-003",
+      "title": "Weekly Report Submission",
+      "type": "Reporting",
+      "assignedDate": "2024-07-22T09:00:00Z",
+      "dueDate": "2024-07-27T23:59:00Z",
+      "status": "Completed",
+      "userReport": "Weekly report submitted as per protocol. All tasks for the week were addressed. Detailed notes included in the standard submission document.",
+      "mistressAppraisal": "Satisfactory. Report was thorough and on time. Compliance noted."
+    },
+    {
+      "id": "task-004",
+      "title": "Study Chapter 3: Advanced Protocols",
+      "type": "Education",
+      "assignedDate": "2024-07-25T14:00:00Z",
+      "dueDate": "2024-07-26T20:00:00Z",
+      "status": "Failed",
+      "userReport": "Failed to complete the study and summary by the deadline due to unforeseen external commitments. I understand this is not an excuse and accept the consequences.",
+      "mistressAppraisal": "Unacceptable. Time management needs significant improvement. Re-assigning with a stricter deadline and supplementary tasks."
+    },
+    {
+      "id": "task-005",
+      "title": "Physical Conditioning: Endurance Run",
+      "type": "Fitness",
+      "assignedDate": "2024-07-29T06:00:00Z",
+      "dueDate": "2024-07-29T07:30:00Z",
+      "status": "Pending",
+      "userReport": null,
+      "mistressAppraisal": null
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+
+import React, { useState, useEffect } from 'react';
+import { Clock } from './components/Clock';
+import { DirectiveCard } from './components/DirectiveCard';
+import { Directive, Database, DirectiveStatus } from './types';
+
+const App: React.FC = () => {
+  const [directives, setDirectives] = useState<Directive[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchDirectives = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        // In a real build, database.json would be in the public folder
+        // For local dev, ensure public/database.json exists and is served.
+        const response = await fetch('/database.json');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}. Ensure database.json is in the public folder and accessible.`);
+        }
+        const data = await response.json() as Database;
+        // Sort directives: pending first, then by due date (earliest first for pending, latest first for archives)
+        const sortedDirectives = data.directives.sort((a, b) => {
+          if (a.status === DirectiveStatus.PENDING && b.status !== DirectiveStatus.PENDING) return -1;
+          if (a.status !== DirectiveStatus.PENDING && b.status === DirectiveStatus.PENDING) return 1;
+          if (a.status === DirectiveStatus.PENDING) {
+            return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+          }
+          // For archived, sort by due date descending (most recent first)
+          return new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
+        });
+        setDirectives(sortedDirectives);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(`Failed to load directives: ${err.message}`);
+        } else {
+          setError('An unknown error occurred while fetching directives.');
+        }
+        console.error("Error fetching directives:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDirectives();
+  }, []);
+
+  const pendingDirectives = directives.filter(d => d.status === DirectiveStatus.PENDING);
+  const archivedDirectives = directives.filter(d => d.status === DirectiveStatus.COMPLETED || d.status === DirectiveStatus.FAILED);
+
+  return (
+    <div className="min-h-screen bg-ledger-bg text-ledger-text font-mono p-4 md:p-8 selection:bg-ledger-accent selection:text-ledger-bg">
+      <header className="mb-8 pb-4 border-b-2 border-ledger-border flex flex-col sm:flex-row justify-between items-center">
+        <h1 className="text-3xl md:text-4xl font-bold text-ledger-accent mb-4 sm:mb-0">The Unalterable Ledger</h1>
+        <Clock />
+      </header>
+
+      <main>
+        {isLoading && <p className="text-center text-xl text-ledger-text-dim">Loading Directives...</p>}
+        {error && <p className="text-center text-xl text-red-500 bg-red-900/50 p-4 border border-red-700">{error}</p>}
+        
+        {!isLoading && !error && (
+          <>
+            <section className="mb-12">
+              <h2 className="text-2xl font-semibold mb-6 text-ledger-accent border-b border-ledger-border pb-2">Pending Directives</h2>
+              {pendingDirectives.length > 0 ? (
+                <div className="space-y-6">
+                  {pendingDirectives.map(directive => (
+                    <DirectiveCard key={directive.id} directive={directive} />
+                  ))}
+                </div>
+              ) : (
+                <p className="text-ledger-text-dim">No pending directives. Awaiting new instructions.</p>
+              )}
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-semibold mb-6 text-ledger-accent border-b border-ledger-border pb-2">The Archives</h2>
+              {archivedDirectives.length > 0 ? (
+                <div className="space-y-6">
+                  {archivedDirectives.map(directive => (
+                    <DirectiveCard key={directive.id} directive={directive} />
+                  ))}
+                </div>
+              ) : (
+                <p className="text-ledger-text-dim">The archives are empty.</p>
+              )}
+            </section>
+          </>
+        )}
+      </main>
+      <footer className="mt-12 pt-4 border-t-2 border-ledger-border text-center text-ledger-text-dim text-sm">
+        <p>This ledger is a reflection of commitment. Data is immutable through this interface.</p>
+        <p>&copy; {new Date().getFullYear()} The Unalterable Ledger</p>
+      </footer>
+    </div>
+  );
+};
+
+export default App;

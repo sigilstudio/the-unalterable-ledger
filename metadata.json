@@ -1,0 +1,5 @@
+{
+  "name": "The Unalterable Ledger",
+  "description": "A read-only, brutalist-style ledger for directives, where data is managed by manually editing a database.json file and committing to Git. Designed for a Dominant/submissive dynamic.",
+  "requestFramePermissions": []
+}
